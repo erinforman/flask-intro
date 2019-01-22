@@ -18,7 +18,7 @@ AWESOMENESS = [
 def start_here():
     """Home page."""
 
-    return "<!doctype html><html>Hi! This is the home page.</html>"
+    return """<!doctype html><html>Hi! This is the home page.<a href="http://localhost:5000/hello">try me!</a></html>"""
 
 
 @app.route("/hello")
@@ -33,8 +33,23 @@ def say_hello():
       </head>
       <body>
         <h1>Hi There!</h1>
-        <form action="/greet">
+        <form action="/greet" method="POST">
           What's your name? <input type="text" name="person">
+          Compliment:
+            <select name="compliment">
+                <option value="Floral">Floral</option>
+                <option value="Very dances with wolves">Very dances with wolves</option>
+                <option value="Mathematical">Mathematical</option>
+            </select>
+        <input type="submit" value="Submit">
+        </form>
+        <form action="/diss" method="GET">
+          Diss:
+            <select name="diss">
+                <option value="You smell like a subway">You smell like a subway</option>
+                <option value="You could be a farmer in those clothes">You could be a farmer in those clothes</option>
+                <option value="Avuncular">Avuncular</option>
+            </select>
           <input type="submit" value="Submit">
         </form>
       </body>
@@ -42,15 +57,16 @@ def say_hello():
     """
 
 
-@app.route("/greet")
+@app.route("/greet", methods=["POST"])
 def greet_person():
     """Get user by name."""
 
-    player = request.args.get("person")
+    player = request.form.get("person")
 
-    compliment = choice(AWESOMENESS)
+    compliment = request.form.get("compliment")
 
-    y = x
+    # compliment = choice(AWESOMENESS)
+   #y = x
 
     return """
     <!doctype html>
@@ -65,7 +81,30 @@ def greet_person():
     """.format(player, compliment)
 
 
+@app.route("/diss", methods=["GET"])
+def diss_person():
+    """Get user by name."""
+
+    player = request.args.get("person")
+
+    diss = request.args.get("diss")
+
+    # compliment = choice(AWESOMENESS)
+   #y = x
+
+    return """
+    <!doctype html>
+    <html>
+      <head>
+        <title>A Diss</title>
+      </head>
+      <body>
+        Hi, {}! I think you're {}!
+      </body>
+    </html>
+    """.format(player, diss)
+
 if __name__ == "__main__":
     # debug=True gives us error messages in the browser and also "reloads"
     # our web app if we change the code.
-    app.run(debug=False, host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0")
